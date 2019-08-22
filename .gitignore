@@ -1,0 +1,21 @@
+target/
+.mvn
+mvnw
+mvnw.cmd
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.xlsx
+*.rar
+cache
+
+### eclipse ###
+.classpath
+.project
+.settings/
+bin/
+
+*.bak
