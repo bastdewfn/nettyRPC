@@ -1,6 +1,7 @@
 package com.dewfn.netty.rpc.proxy;
 
 import com.alibaba.fastjson.JSON;
+import com.dewfn.netty.rpc.exception.MyRpcExcetipon;
 import lombok.extern.log4j.Log4j2;
 import com.dewfn.netty.rpc.IMyInvokes;
 import com.dewfn.netty.rpc.MyRequestEntity;
@@ -46,6 +47,13 @@ public class MyInvocationHandler<T> implements InvocationHandler {
         if(e>1000){
             log.debug("有点耗时");
         }
+
+        if(result==null)
+            throw new MyRpcExcetipon("服务调用失败");
+        else if(result.isSuccess()==false){
+            throw new MyRpcExcetipon(result.getMsg());
+        }
+
         log.info("远程调用 {}:{} 耗时:{} 类:{},服务名:{}  方法:{}  参数:{} 返回:{} ", rpcConsume.RemoteIp(),
                 rpcConsume.RemotePort(),e       ,tClass.getName(),
                 rpcConsume.ServiceName(),method.getName(), JSON.toJSONString(args),JSON.toJSONString(result));

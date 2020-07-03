@@ -29,7 +29,7 @@ public class RpcMainClientKeepTest {
 
 //
         long s=System.currentTimeMillis();
-        for (int i=0;i<1000;i++) {
+        for (int i=0;i<100;i++) {
 
             Thread thread = new Thread(() -> {
                 while (true) {
@@ -46,7 +46,7 @@ public class RpcMainClientKeepTest {
         try {
             CompletableFuture.runAsync(()->{
                 try {
-                    Thread.sleep(20000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

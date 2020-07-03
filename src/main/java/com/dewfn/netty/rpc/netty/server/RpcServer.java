@@ -1,5 +1,7 @@
 package com.dewfn.netty.rpc.netty.server;
 
+import com.dewfn.netty.rpc.netty.MessageToMyRequestEntityDecoder;
+import com.dewfn.netty.rpc.netty.MyResponseEntityToMessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,6 +12,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
@@ -32,11 +35,23 @@ public class RpcServer {
 
                             ChannelPipeline pipeline = ch.pipeline();
 
+//socket
                             pipeline.addLast(new DelimiterBasedFrameDecoder(2046, Delimiters.lineDelimiter()));
                             pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
                             pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
-                            pipeline.addLast(new ServerReceiveHandler());
+                            pipeline.addLast(new MessageToMyRequestEntityDecoder());
+                            pipeline.addLast(new MyResponseEntityToMessageEncoder());
+
+//http
+//                            pipeline.addLast(new HttpServerCodec());
+//                            pipeline.addLast(new HttpObjectAggregator(55555));
+//                            pipeline.addLast(new HttpRequestToMyRequestEntityDecoder());
+//                            pipeline.addLast(new MyResponseEntityToHttpResponsetEncoder());
+
+
                             pipeline.addLast(workerGroup2,new ServerLocalCallHandler());
+
+
                         };
                     });
             log.info("开户RPC监听端口:9999");

@@ -55,7 +55,7 @@ public  class RpcLocalServiceManager {
 
      Map<String,LocalServiceMethod> localService=new HashMap<>();
 
-    public  void addService(Class<?> serviceClass){
+    public <T> void  addService(Class<T> interfaceClass,Class<? extends T> serviceClass){
         Method[] methods= serviceClass.getDeclaredMethods();
         String className=serviceClass.getName();
         MyRpcProduct myRpcProduct=serviceClass.getAnnotation(MyRpcProduct.class);
@@ -76,24 +76,28 @@ public  class RpcLocalServiceManager {
          if(localServiceMethod==null){
              responseEntity.setSuccess(false);
              responseEntity.setMsg("404没有此调用方法");
+             responseEntity.setCode(404);
              return  responseEntity;
          }
 
          if( requestEntity.getParams()!=null&&requestEntity.getParams().length!=localServiceMethod.paramsClass.length){
              responseEntity.setSuccess(false);
              responseEntity.setMsg("303请求参数不对应");
+             responseEntity.setCode(303);
              return  responseEntity;
          }
         try {
             Object result=localServiceMethod.invoke(requestEntity.getParams());
             responseEntity.setSuccess(true);
             responseEntity.setMsg("200");
+            responseEntity.setCode(200);
             responseEntity.setResult(JSON.toJSONString(result));
             responseEntity.setResponseClassType(localServiceMethod.responseClassType);
         } catch (Exception e) {
             log.error("本地调用方法异常:参数:{}",JSON.toJSONString(localServiceMethod),e);
             responseEntity.setSuccess(false);
             responseEntity.setMsg("500 服务内部调用错误");
+            responseEntity.setCode(500);
             responseEntity.setResponseClassType(localServiceMethod.responseClassType);
         }
 

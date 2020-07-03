@@ -11,7 +11,7 @@ public class RpcMainServerTest {
     public static void main(String[] args){
 
         PropertyConfigurator.configure("D:\\MyProject\\threadtest\\src\\main\\java\\log4j2.xml");
-        RpcLocalServiceManager.getInstance().addService(TestService.class);
+        RpcLocalServiceManager.getInstance().addService(ITestService.class,TestService.class);
 
         try {
              RpcServer.run();

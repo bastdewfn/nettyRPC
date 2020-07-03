@@ -1,6 +1,8 @@
 package com.dewfn.netty.rpc.netty.client;
 
 import com.alibaba.fastjson.JSON;
+import com.dewfn.netty.rpc.netty.MessageToMyResponseEntityDecoder;
+import com.dewfn.netty.rpc.netty.MyRequestEntityToMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -45,6 +47,8 @@ public class RpcClient {
                             pipeline.addLast(new DelimiterBasedFrameDecoder(4096, Delimiters.lineDelimiter()));
                             pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
                             pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+                            pipeline.addLast(new MyRequestEntityToMessageEncoder());
+                            pipeline.addLast(new MessageToMyResponseEntityDecoder());
                             pipeline.addLast(new ClinetReceiveHandler((response) -> {
                                 responseEntity.setResponseEntity(response);
                             }));
@@ -59,7 +63,7 @@ public class RpcClient {
            // responseEntity.lock();
             channel=channelFuture.sync().channel();
             log.info("传送数据 {}", JSON.toJSONString(requestEntity));
-            channel.writeAndFlush(getResponseString(requestEntity));
+            channel.writeAndFlush(requestEntity);
 
         } catch (Exception e) {
             throw e;
@@ -67,9 +71,7 @@ public class RpcClient {
         return responseEntity;
     }
 
-    private static String getResponseString(MyRequestEntity myRequestEntity) {
-        return JSON.toJSONString(myRequestEntity) + "\r\n";
-    }
+
 
     public void close() {
         log.info("关闭连接");

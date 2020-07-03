@@ -1,6 +1,9 @@
 package com.dewfn.netty;
 
 import com.dewfn.netty.rpc.annotation.MyRpcProduct;
+import io.netty.util.concurrent.Future;
+
+import java.util.function.Consumer;
 
 @MyRpcProduct(ServiceName = "testService")
 public class TestService implements ITestService {
@@ -28,4 +31,6 @@ public class TestService implements ITestService {
 
             System.out.println("被调用了:"+entity);
     }
+
+
 }

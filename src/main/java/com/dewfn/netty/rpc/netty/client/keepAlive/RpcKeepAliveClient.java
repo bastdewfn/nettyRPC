@@ -1,6 +1,8 @@
 package com.dewfn.netty.rpc.netty.client.keepAlive;
 
 import com.alibaba.fastjson.JSON;
+import com.dewfn.netty.rpc.netty.MessageToMyResponseEntityDecoder;
+import com.dewfn.netty.rpc.netty.MyRequestEntityToMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -79,6 +81,8 @@ public class RpcKeepAliveClient {
                                 pipeline.addLast(new DelimiterBasedFrameDecoder(4096, Delimiters.lineDelimiter()));
                                 pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
                                 pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+                                pipeline.addLast(new MyRequestEntityToMessageEncoder());
+                                pipeline.addLast(new MessageToMyResponseEntityDecoder());
                                 pipeline.addLast(new ClinetReceiveKeepAliveHandler((response) -> {
                                     if(response.getMId()==null){
                                         myRequestEntityMap.values().forEach(x->{ x.setResponseEntity(response); });

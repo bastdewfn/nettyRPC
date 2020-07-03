@@ -8,7 +8,7 @@ import com.dewfn.netty.rpc.MyResponseEntity;
 import com.dewfn.netty.rpc.netty.NettyRpcCallBack;
 
 @Log4j2
-public class ClinetReceiveKeepAliveHandler extends SimpleChannelInboundHandler<String> {
+public class ClinetReceiveKeepAliveHandler extends SimpleChannelInboundHandler<MyResponseEntity> {
 
     public ClinetReceiveKeepAliveHandler(NettyRpcCallBack rpcCallBack) {
         this.rpcCallBack = rpcCallBack;
@@ -45,11 +45,10 @@ public class ClinetReceiveKeepAliveHandler extends SimpleChannelInboundHandler<S
         ctx.fireChannelInactive();
     }
 
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String o) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, MyResponseEntity myResponseEntity) throws Exception {
 
-        log.info("netty返回:"+o);
+        log.info("netty返回:"+ JSON.toJSONString(myResponseEntity));
         if(!isEnd) {
-            MyResponseEntity<String> myResponseEntity = JSON.parseObject(o, MyResponseEntity.class);
             rpcCallBack.nettyCallBack(myResponseEntity);
         }
 

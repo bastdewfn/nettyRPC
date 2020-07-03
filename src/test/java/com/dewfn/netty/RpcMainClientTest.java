@@ -13,10 +13,11 @@ public class RpcMainClientTest {
 
 
 
-        for (int i=0;i<10;i++) {
+
+        for (int i=0;i<1;i++) {
 
             Thread thread = new Thread(() -> {
-                for (int j = 0; j < 100; j++) {
+                for (int j = 0; j < 1; j++) {
                     String r = testService.test2();
                     System.out.println("这是一个远程结果:" + r);
                 }
